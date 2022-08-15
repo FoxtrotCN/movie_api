@@ -4,7 +4,7 @@ from django.db import models
 class Movie(models.Model):
     ACTION = 'AC'
     DRAMA = 'DR'
-    COMEDY = 'COMEDY'
+    COMEDY = 'CM'
     SCIENCE_FICTION = 'SF'
     THRILLER = 'TR'
     RELIGIOUS = 'RG'
@@ -25,3 +25,10 @@ class Movie(models.Model):
 
     def __str__(self):
         return self.title
+
+    # def serialize(self):
+    #     return {
+    #         'title': self.title,
+    #         'synopsis': self.synopsis,
+    #         'genre': self.genre
+    #     }

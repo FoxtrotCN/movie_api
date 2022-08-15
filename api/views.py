@@ -2,30 +2,35 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.views import View
+from django.http.response import JsonResponse
 from .models import Movie
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+import json
 
+class MovieList(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
-class MovieList(ListView):
-    model = Movie
+    def get(self, request):
+        movies = list(Movie.objects.values())
+        if len(movies) > 0:
+            data = {'message': "Success", 'movies': movies}
+        else:
+            data = {'message': "Movies not found"}
+        return JsonResponse(data)
 
+    def post(self, request):
 
-class MovieDetail(DetailView):
-    model = Movie
+        json_data = json.loads(request.body)
+        Movie.objects.create(title=json_data['title'], synopsis=json_data['synopsis'], genre=json_data['genre'])
+        data = {'message': "Success"}
+        return JsonResponse(data)
 
+    def put(self, request):
+        pass
 
-class MovieCreate(CreateView):
-    model = Movie
-    fields = ['title', 'synopsis', 'genre']
-    success_url = reverse_lazy('movies')
-
-
-class MovieUpdate(UpdateView):
-    model = Movie
-    fields = ['title', 'synopsis', 'genre']
-    success_url = reverse_lazy('movie')
-
-
-class MovieDelete(DeleteView):
-    model = Movie
-    context_object_name = 'movie'
-    success_url = reverse_lazy('movies')
+    def delete(self, request):
+        pass
