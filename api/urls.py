@@ -2,9 +2,10 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path('movies/', MovieList.as_view(), name='movies'),
-    path('movies/<str:pk>/', MovieList.as_view(), name='movie'),
-    # path('create-movie/', MovieCreate.as_view(), name='create-movie'),
-    # path('update-movie/<str:pk>/', MovieUpdate.as_view(), name='update-movie'),
-    # path('delete-movie/<str:pk>/', MovieDelete.as_view(), name='delete-movie'),
+    path('movies/', MovieView.as_view(), name='movies-list'),
+    path('create-new-movie/', MovieView.as_view(), name='create-new-movie'),
+    path('movie-detail/<int:pk>/', MovieView.as_view(), name='movie-detail'),
+    path('update-movie/<int:pk>/', MovieView.as_view(), name='update-movie'),
+    path('delete-movie/<int:pk>/', MovieView.as_view(), name='delete-movie'),
+
 ]

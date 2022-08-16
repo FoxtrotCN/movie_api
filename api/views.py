@@ -10,45 +10,72 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 
 
-class MovieList(View):
+class MovieView(View):
+
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request, pk):
+    def get(self, request, pk=0):
         """
-        Return a List of all Movies, or a Single movie
-        :param request:
+        Return the list of all movies, or a single movie
         :param pk:
+        :param request:
         :return:
         """
-        if pk:
+        if pk > 0:
             movies = list(Movie.objects.filter(pk=pk).values())
             if len(movies) > 0:
                 movie = movies[0]
                 data = {'message': "Success", 'movie': movie}
             else:
-                data = {'message': "Movie not found ..."}
+                data = {'message': "Movie not found... "}
             return JsonResponse(data)
-
         else:
 
             movies = list(Movie.objects.values())
             if len(movies) > 0:
                 data = {'message': "Success", 'movies': movies}
             else:
-                data = {'message': "Movies not found"}
+                data = {'message': "Movies not found ..."}
             return JsonResponse(data)
 
     def post(self, request):
-
+        """
+        Create a new movie
+        :param request:
+        :return:
+        """
         json_data = json.loads(request.body)
         Movie.objects.create(title=json_data['title'], synopsis=json_data['synopsis'], genre=json_data['genre'])
         data = {'message': "Success"}
         return JsonResponse(data)
 
-    def put(self, request):
-        pass
+    def put(self, request, pk):
+        """
+        Update a single movie
+        :param request:
+        :param pk:
+        :return:
+        """
+        json_data = json.loads(request.body)
+        movies = list(Movie.objects.filter(pk=pk).values())
+        if len(movies) > 0:
+            movie = Movie.objects.get(pk=pk)
+            movie.title = json_data['title']
+            movie.synopsis = json_data['synopsis']
+            movie.genre = json_data['genre']
+            movie.save()
+            data = {'message': "Success"}
+        else:
+            data = {'message': "Movie not found ..."}
+        return JsonResponse(data)
 
-    def delete(self, request):
-        pass
+    def delete(self, request, pk):
+        movies = list(Movie.objects.filter(pk=pk).values())
+        if len(movies) > 0:
+            Movie.objects.filter(pk=pk).delete()
+            data = {'message': "Success"}
+        else:
+            data = {'message': "Movie not found ..."}
+        return JsonResponse(data)
