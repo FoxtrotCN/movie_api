@@ -33,7 +33,7 @@ class MovieView(View):
             return JsonResponse(data)
         else:
 
-            movies = list(Movie.objects.values())
+            movies = list(Movie.objects.values().order_by('pk'))
             if len(movies) > 0:
                 data = {'message': "Success", 'movies': movies}
             else:
@@ -59,7 +59,7 @@ class MovieView(View):
         :return:
         """
         json_data = json.loads(request.body)
-        movies = list(Movie.objects.filter(pk=pk).values())
+        movies = list(Movie.objects.filter(pk=pk).values().order_by(pk))
         if len(movies) > 0:
             movie = Movie.objects.get(pk=pk)
             movie.title = json_data['title']
