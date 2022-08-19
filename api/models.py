@@ -1,6 +1,9 @@
 from django.db import models
 
 
+#class Actor(models.Model):
+
+
 class Movie(models.Model):
     ACTION = 'AC'
     DRAMA = 'DR'
@@ -22,9 +25,20 @@ class Movie(models.Model):
     title = models.CharField(max_length=155, blank=False)
     synopsis = models.TextField(max_length=1000, blank=True)
     genre = models.CharField(max_length=100, choices=GENRE_CHOICES, default='', blank=False)
+    tag = models.JSONField(default=dict)
 
     def __str__(self):
         return self.title
+
+
+
+
+
+
+
+
+
+
 
     # def serialize(self):
     #     return {

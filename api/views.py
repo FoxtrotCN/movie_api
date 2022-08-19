@@ -47,7 +47,8 @@ class MovieView(View):
         :return:
         """
         json_data = json.loads(request.body)
-        Movie.objects.create(title=json_data['title'], synopsis=json_data['synopsis'], genre=json_data['genre'])
+        Movie.objects.create(title=json_data['title'], synopsis=json_data['synopsis'], genre=json_data['genre'],
+                             tag=json_data['tag'])
         data = {'message': "Success"}
         return JsonResponse(data)
 
@@ -59,12 +60,13 @@ class MovieView(View):
         :return:
         """
         json_data = json.loads(request.body)
-        movies = list(Movie.objects.filter(pk=pk).values().order_by(pk))
+        movies = list(Movie.objects.filter(pk=pk).values())
         if len(movies) > 0:
             movie = Movie.objects.get(pk=pk)
             movie.title = json_data['title']
             movie.synopsis = json_data['synopsis']
             movie.genre = json_data['genre']
+            movie.tag = json_data['tag']
             movie.save()
             data = {'message': "Success"}
         else:
